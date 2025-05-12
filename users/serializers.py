@@ -7,6 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
     """
     Сериализатор для модели User
     """
+
     habits = HabitSerializer(source="users_habits", many=True, read_only=True)
 
     class Meta:

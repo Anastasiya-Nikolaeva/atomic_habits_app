@@ -8,6 +8,7 @@ class UserTest(APITestCase):
     """
     Тестирование API для модели User
     """
+
     def setUp(self):
         self.user = User.objects.create(
             email="test@test.ru", is_staff=True, is_superuser=True
@@ -32,14 +33,10 @@ class UserTest(APITestCase):
         url = reverse("users:users-list")
         response = self.client.get(url)
 
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK
-        )
-        self.assertEqual(
-            response.json()["results"][0]["email"],
-            "test@test.ru"
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = response.json()
+        self.assertTrue(len(results) > 0, "Список пользователей пуст")
+        self.assertEqual(results[0]["email"], "test@test.ru")
 
     def test_retrieve_users(self):
         """
@@ -48,31 +45,19 @@ class UserTest(APITestCase):
         url = reverse("users:users-detail", kwargs={"pk": self.user.pk})
         response = self.client.get(url)
 
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK
-        )
-        self.assertEqual(
-            response.json()["email"],
-            "test@test.ru")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["email"], "test@test.ru")
 
     def test_update_user(self):
         """
         Тест на изменения информации о пользователе
         """
-        url = reverse(
-            "users:users-detail", args=(self.user.pk,))
+        url = reverse("users:users-detail", args=(self.user.pk,))
         data = {"email": "test1@test.ru"}
         response = self.client.patch(url, data)
 
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_200_OK
-        )
-        self.assertEqual(
-            response.json()["email"],
-            "test1@test.ru"
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["email"], "test1@test.ru")
 
     def test_delete_user(self):
         """
@@ -81,11 +66,5 @@ class UserTest(APITestCase):
         url = reverse("users:users-detail", args=(self.user.pk,))
         response = self.client.delete(url)
 
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_204_NO_CONTENT
-        )
-        self.assertEqual(
-            User.objects.count(),
-            0
-        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(User.objects.count(), 0)

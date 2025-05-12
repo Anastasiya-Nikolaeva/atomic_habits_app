@@ -5,4 +5,5 @@ class ViewUserHabitPagination(PageNumberPagination):
     """
     Пагинация при выводе привычек
     """
+
     page_size = 5

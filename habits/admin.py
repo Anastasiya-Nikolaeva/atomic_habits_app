@@ -7,6 +7,7 @@ class HabitAdmin(admin.ModelAdmin):
     """
     Админка модели Habit
     """
+
     list_display = (
         "id",
         "habit",

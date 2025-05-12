@@ -5,6 +5,7 @@ from rest_framework.permissions import AllowAny, IsAdminUser
 from users.models import User
 from users.serializers import UserSerializer
 
+
 @method_decorator(
     name="list",
     decorator=swagger_auto_schema(
@@ -45,6 +46,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     Представление для модели User
     """
+
     serializer_class = UserSerializer
     queryset = User.objects.all()
     permission_classes = [IsAdminUser]
@@ -57,4 +59,8 @@ class UserViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         user = serializer.save(is_active=True)
         user.set_password(user.password)
-        user.save(update_fields=["password",])
+        user.save(
+            update_fields=[
+                "password",
+            ]
+        )

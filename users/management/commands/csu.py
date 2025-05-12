@@ -7,6 +7,7 @@ class Command(BaseCommand):
     """
     Команда для создания суперадмина
     """
+
     def handle(self, *args, **options):
         user = User.objects.create(
             email="admin@sky.ru",

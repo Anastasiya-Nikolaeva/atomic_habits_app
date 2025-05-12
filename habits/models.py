@@ -3,7 +3,11 @@ from django.db import models
 from datetime import timedelta
 from django.core.validators import MaxValueValidator
 
-from habits.validators import FieldFillingValidator, RelatedHabitValidator, execution_time_validator
+from habits.validators import (
+    FieldFillingValidator,
+    RelatedHabitValidator,
+    execution_time_validator,
+)
 
 
 class Habit(models.Model):
@@ -13,15 +17,10 @@ class Habit(models.Model):
 
     habit = models.CharField(max_length=255, verbose_name="Привычка")
     place_of_execution = models.CharField(
-        max_length=255,
-        verbose_name="Место выполнения привычки",
-        null=True,
-        blank=True
+        max_length=255, verbose_name="Место выполнения привычки", null=True, blank=True
     )
     time_execution = models.TimeField(
-        verbose_name="Время выполнения привычки",
-        null=True,
-        blank=True
+        verbose_name="Время выполнения привычки", null=True, blank=True
     )
     periodicity = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(7)],
@@ -33,8 +32,7 @@ class Habit(models.Model):
         verbose_name="Продолжительность выполнения привычки",
     )
     sign_of_a_pleasant_habit = models.BooleanField(
-        verbose_name="Показатель приятной привычки",
-        default=False
+        verbose_name="Показатель приятной привычки", default=False
     )
     related_habit = models.ForeignKey(
         "self",
@@ -45,10 +43,7 @@ class Habit(models.Model):
         related_name="related_habits",
     )
     reward = models.CharField(
-        verbose_name="Вознаграждение за привычку",
-        max_length=255,
-        null=True,
-        blank=True
+        verbose_name="Вознаграждение за привычку", max_length=255, null=True, blank=True
     )
 
     class Status(models.TextChoices):

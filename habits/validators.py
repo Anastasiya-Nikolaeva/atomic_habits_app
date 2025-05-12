@@ -15,7 +15,9 @@ class FieldFillingValidator:
     def __call__(self, instance):
         reward_field = getattr(instance, self.reward, None)
         related_habit_field = getattr(instance, self.related_habit, None)
-        sign_of_a_pleasant_habit_field = getattr(instance, self.sign_of_a_pleasant_habit, None)
+        sign_of_a_pleasant_habit_field = getattr(
+            instance, self.sign_of_a_pleasant_habit, None
+        )
 
         if reward_field and related_habit_field:
             raise ValidationError(

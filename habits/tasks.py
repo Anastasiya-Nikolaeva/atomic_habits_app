@@ -22,13 +22,17 @@ def send_message_to_user():
                     f"в {habit.place_of_execution}"
                 )
                 try:
-                    send_telegram_message(message=message, chat_id=habit.owner.tg_chat_id)
+                    send_telegram_message(
+                        message=message, chat_id=habit.owner.tg_chat_id
+                    )
                 except Exception as e:
                     # Логирование ошибки
                     logger.error(f"Ошибка при отправке сообщения: {e}")
                 else:
                     habit.send_indicator = habit.periodicity  # Сброс индикатора
             else:
-                logger.warning(f"У пользователя {habit.owner.id} отсутствует tg_chat_id.")
+                logger.warning(
+                    f"У пользователя {habit.owner.id} отсутствует tg_chat_id."
+                )
 
         habit.save(update_fields=["send_indicator"])

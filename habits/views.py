@@ -45,10 +45,12 @@ from users.permissions import IsOwner
         operation_description="Контроллер для удаления привычки"
     ),
 )
+
 class HabitsViewSet(viewsets.ModelViewSet):
     """
     Представление для модели Habit
     """
+
     serializer_class = HabitSerializer
     queryset = Habit.objects.all()
 
@@ -70,6 +72,7 @@ class UserHabitViewSet(APIView):
     """
     Представление для получения списка всех привычек пользователя
     """
+
     @swagger_auto_schema(responses={200: HabitSerializer()})
     def get(self, request):
         habits = Habit.objects.filter(owner=request.user)
