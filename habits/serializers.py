@@ -2,7 +2,6 @@ from rest_framework import serializers
 from habits.models import Habit
 from habits.validators import (
     FieldFillingValidator,
-    RelatedHabitValidator,
     execution_time_validator,
 )
 

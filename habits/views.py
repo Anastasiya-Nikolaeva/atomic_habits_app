@@ -46,6 +46,7 @@ from users.permissions import IsOwner
     ),
 )
 
+
 class HabitsViewSet(viewsets.ModelViewSet):
     """
     Представление для модели Habit
