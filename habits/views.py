@@ -45,8 +45,6 @@ from users.permissions import IsOwner
         operation_description="Контроллер для удаления привычки"
     ),
 )
-
-
 class HabitsViewSet(viewsets.ModelViewSet):
     """
     Представление для модели Habit
