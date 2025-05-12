@@ -3,11 +3,11 @@ FROM python:3.12-slim
 WORKDIR /app
 
 RUN apt-get update \
-    && apt-get install -y gcc libpq-dev \
+    && apt-get install -y gcc libpq-dev default-libmysqlclient-dev pkg-config \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTHECODE=1
+ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
