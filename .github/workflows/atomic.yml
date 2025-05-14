@@ -76,6 +76,10 @@ jobs:
 
       - name: Deploy to server
         run: |
+          echo "SSH_USER: ${{ secrets.SSH_USER }}"
+          echo "SERVER_IP: ${{ secrets.SERVER_IP }}"
+          echo "DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}"
+          echo "GITHUB_SHA: ${{ github.sha }}"
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
               docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/atomichabits:${{ github.sha }}
               docker stop atomichabits || true
