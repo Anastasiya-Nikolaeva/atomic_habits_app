@@ -81,8 +81,8 @@ jobs:
           echo "DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}"
           echo "GITHUB_SHA: ${{ github.sha }}"
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-              docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/atomichabits:${{ github.sha }}
-              docker stop atomichabits || true
-              docker rm atomichabits || true
-              docker run -d --name atomichabits -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/atomichabits:${{ github.sha }}
+              sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/atomichabits:${{ github.sha }}
+              sudo docker stop atomichabits || true
+              sudo docker rm atomichabits || true
+              sudo docker run -d --name atomichabits -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/atomichabits:${{ github.sha }}
           EOF
