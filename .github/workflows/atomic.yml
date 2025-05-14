@@ -76,13 +76,24 @@ jobs:
 
       - name: Deploy to server
         run: |
-          echo "SSH_USER: ${{ secrets.SSH_USER }}"
-          echo "SERVER_IP: ${{ secrets.SSH_HOST }}"
-          echo "DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}"
-          echo "GITHUB_SHA: ${{ github.sha }}"
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+              set -e  # Остановить выполнение при ошибке
+
+              echo "Pulling Docker image..."
               sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/atomichabits:${{ github.sha }}
+
+              echo "Stopping existing container..."
               sudo docker stop atomichabits || true
+
+              echo "Removing existing container..."
               sudo docker rm atomichabits || true
+
+              echo "Running new container..."
               sudo docker run -d --name atomichabits -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/atomichabits:${{ github.sha }}
+
+              echo "Checking container status..."
+              sudo docker ps -a
+
+              echo "Fetching logs..."
+              sudo docker logs atomichabits
           EOF
