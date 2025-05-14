@@ -14,6 +14,11 @@ services:
       - static_files:/app/static
     depends_on:
       - postgres
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   postgres:
     image: postgres:17
@@ -54,6 +59,11 @@ services:
     command: sh -c "celery -A config worker --loglevel=info"
     depends_on:
       - redis
+    healthcheck:
+      test: ["CMD-SHELL", "celery -A config inspect ping || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   celery-beat:
     build:
@@ -77,6 +87,11 @@ services:
       - static_files:/app/static
     depends_on:
       - app
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 volumes:
   static_files:
