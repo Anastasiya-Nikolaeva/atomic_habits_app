@@ -78,17 +78,18 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
               set -e  # Остановить выполнение при ошибке
-            
+
               # Проверка существующего контейнера и его удаление
               if [ "$(docker ps -q -f name=app_atomic)" ]; then
                   docker stop app_atomic
                   docker rm app_atomic
+                  sleep 2  # Задержка для завершения удаления контейнера
               fi
-            
+
               docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/app_atomic:${{ github.sha }}
-            
+
               docker run -d --name app_atomic -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/app_atomic:${{ github.sha }}
-            
+
               docker ps | grep app_atomic || echo "Container not running"
               docker logs app_atomic
           EOF
