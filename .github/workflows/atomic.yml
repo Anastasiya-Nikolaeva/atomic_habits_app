@@ -57,10 +57,10 @@ jobs:
         run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/atomichabits:${{ github.sha }} .
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/app_atomic:${{ github.sha }} .
 
       - name: Push Docker image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/atomichabits:${{ github.sha }}
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/app_atomic:${{ github.sha }}
 
   deploy:
     needs: build
@@ -79,21 +79,12 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
               set -e  # Остановить выполнение при ошибке
 
-              echo "Pulling Docker image..."
-              sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/atomichabits:${{ github.sha }}
+              docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/app_atomic:${{ github.sha }}
 
-              echo "Stopping existing container..."
-              sudo docker stop atomichabits || true
+              docker stop app_atomic || true
 
-              echo "Removing existing container..."
-              sudo docker rm atomichabits || true
+              docker rm app_atomic || true
 
-              echo "Running new container..."
-              sudo docker run -d --name atomichabits -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/atomichabits:${{ github.sha }}
+              docker run -d --name app_atomic -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/app_atomic:${{ github.sha }}
 
-              echo "Checking container status..."
-              sudo docker ps -a
-
-              echo "Fetching logs..."
-              sudo docker logs atomichabits
-          EOF
+              docker ps | grep app_atomic || echo "Container not running"
