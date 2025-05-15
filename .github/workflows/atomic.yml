@@ -81,7 +81,7 @@ jobs:
 
               # Проверка существующего контейнера и его удаление
               if [ "$(docker ps -q -f name=app_atomic)" ]; then
-                  docker stop app_atomic
+                  docker kill app_atomic
                   docker rm app_atomic
                   sleep 2  # Задержка для завершения удаления контейнера
               fi
