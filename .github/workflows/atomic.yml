@@ -77,14 +77,11 @@ jobs:
       - name: Deploy to server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-              set -e  # Остановить выполнение при ошибке
-
+              cd /home/login/a_h_app/atomic_habits_app
+              git pull origin feature/task-1
               docker-compose down
-
               docker-compose pull
-
               docker-compose up -d
-
               docker ps | grep app_atomic || echo "Container not running"
               docker logs app_atomic
           EOF
