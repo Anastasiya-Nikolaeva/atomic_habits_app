@@ -78,8 +78,9 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
               cd /home/login/a_h_app/atomic_habits_app
-              git pull origin feature/task-1
+              docker rm -f $(docker ps -aq) || echo "No containers to remove"
               docker-compose down
+              git pull origin feature/task-1
               docker-compose pull
               docker-compose up -d
               docker ps | grep app_atomic || echo "Container not running"
