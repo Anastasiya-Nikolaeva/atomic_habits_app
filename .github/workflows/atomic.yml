@@ -80,8 +80,6 @@ jobs:
               cd /home/login/a_h_app/atomic_habits_app
               docker rm -f $(docker ps -aq) || echo "No containers to remove"
               docker-compose down
-              git pull origin feature/task/1
-              docker-compose pull
               docker-compose up -d
               docker ps | grep app_atomic || echo "Container not running"
               docker logs app_atomic
