@@ -77,12 +77,8 @@ jobs:
       - name: Deploy to server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-              if [ $(docker ps -q -f name=app_atomic) ]; then
-                  docker stop app_atomic
-              fi
-              if [ $(docker ps -aq -f name=app_atomic) ]; then
-                  docker rm app_atomic
-              fi
+              docker stop app_atomic || true
+              docker rm app_atomic || true
               docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/app_atomic:${{ github.sha }}
               docker run -d --name app_atomic -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/app_atomic:${{ github.sha }}
               docker logs app_atomic
