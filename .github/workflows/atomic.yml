@@ -77,10 +77,27 @@ jobs:
       - name: Deploy to server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
-              cd /home/login/a_h_app/atomic_habits_app
-              docker rm -f $(docker ps -aq) || echo "No containers to remove"
-              docker-compose down
-              docker-compose up -d
-              docker ps | grep app_atomic || echo "Container not running"
+        # Остановка контейнера, если он запущен
+              if [ $(docker ps -q -f name=app_atomic) ]; then
+                  echo "Stopping existing container..."
+                  docker stop app_atomic
+              fi
+      
+              # Удаление контейнера, если он существует
+              if [ $(docker ps -aq -f name=app_atomic) ]; then
+                  echo "Removing existing container..."
+                  docker rm app_atomic
+              fi
+      
+              # Загрузка нового образа
+              echo "Pulling new image..."
+              docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/app_atomic:${{ github.sha }}
+      
+              # Запуск нового контейнера
+              echo "Starting new container..."
+              docker run -d --name app_atomic -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/app_atomic:${{ github.sha }}
+      
+              # Вывод логов контейнера
+              echo "Fetching logs..."
               docker logs app_atomic
           EOF
