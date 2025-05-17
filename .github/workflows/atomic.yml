@@ -80,6 +80,6 @@ jobs:
               docker stop app_atomic || true
               docker rm app_atomic || true
               docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/app_atomic:${{ github.sha }}
-              docker run -d --name app_atomic -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/app_atomic:${{ github.sha }}
+              docker run -d --name app_atomic --env-file .env -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/app_atomic:${{ github.sha }}
               docker logs app_atomic
           EOF
