@@ -8,9 +8,12 @@ from users.views import UserViewSet
 
 app_name = UsersConfig.name
 
+# Создание маршрутизатора для управления URL-адресами пользователей
 router = DefaultRouter()
 router.register(r"users", UserViewSet, basename="users")
 
+
+# Определение URL-шаблонов для аутентификации пользователей
 urlpatterns = [
     path(
         "users/token/",

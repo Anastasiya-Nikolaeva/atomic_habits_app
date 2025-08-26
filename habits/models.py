@@ -1,7 +1,8 @@
-from django.conf import settings
-from django.db import models
 from datetime import timedelta
+
+from django.conf import settings
 from django.core.validators import MaxValueValidator
+from django.db import models
 
 from habits.validators import (
     FieldFillingValidator,
@@ -12,28 +13,46 @@ from habits.validators import (
 
 class Habit(models.Model):
     """
-    Модель привычки
+    Модель привычки, представляющая собой действие, которое пользователь должен выполнять.
+
+    Атрибуты:
+    - habit: Описание привычки.
+    - place_of_execution: Место, где будет выполняться привычка.
+    - time_execution: Время выполнения привычки.
+    - periodicity: Периодичность выполнения привычки (в днях).
+    - time_to_complete: Время, необходимое для выполнения привычки.
+    - sign_of_a_pleasant_habit: Признак, указывающий, является ли привычка приятной.
+    - related_habit: Связанная привычка (если есть).
+    - reward: Вознаграждение за выполнение привычки.
+    - published: Статус опубликования привычки (опубликована/не опубликована).
+    - owner: Создатель привычки (пользователь).
     """
 
     habit = models.CharField(max_length=255, verbose_name="Привычка")
+
     place_of_execution = models.CharField(
         max_length=255, verbose_name="Место выполнения привычки", null=True, blank=True
     )
+
     time_execution = models.TimeField(
         verbose_name="Время выполнения привычки", null=True, blank=True
     )
+
     periodicity = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(7)],
         verbose_name="Периодичность привычки",
         default=1,
     )
+
     time_to_complete = models.DurationField(
         default=timedelta(seconds=120),
         verbose_name="Продолжительность выполнения привычки",
     )
+
     sign_of_a_pleasant_habit = models.BooleanField(
         verbose_name="Показатель приятной привычки", default=False
     )
+
     related_habit = models.ForeignKey(
         "self",
         on_delete=models.SET_NULL,
@@ -42,11 +61,14 @@ class Habit(models.Model):
         blank=True,
         related_name="related_habits",
     )
+
     reward = models.CharField(
         verbose_name="Вознаграждение за привычку", max_length=255, null=True, blank=True
     )
 
     class Status(models.TextChoices):
+        """Статусы публикации привычки."""
+
         PUBLISHED = "Опубликован", "Опубликован"
         UNPUBLISHED = "Не опубликован", "Не опубликован"
 
@@ -70,6 +92,11 @@ class Habit(models.Model):
         ordering = ("id",)
 
     def clean(self):
+        """
+        Валидация данных модели перед сохранением.
+
+        Вызывает валидаторы для проверки корректности заполнения полей.
+        """
         # Вызов валидаторов
         FieldFillingValidator("reward", "related_habit", "sign_of_a_pleasant_habit")(
             self
@@ -78,4 +105,5 @@ class Habit(models.Model):
         execution_time_validator(self.time_to_complete)
 
     def __str__(self):
+        """Возвращает строковое представление привычки."""
         return self.habit
