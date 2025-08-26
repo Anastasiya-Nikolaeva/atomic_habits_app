@@ -2,6 +2,7 @@ from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAdminUser
+
 from users.models import User
 from users.serializers import UserSerializer
 
@@ -44,7 +45,16 @@ from users.serializers import UserSerializer
 )
 class UserViewSet(viewsets.ModelViewSet):
     """
-    Представление для модели User
+    Представление для модели User.
+
+    Этот класс предоставляет стандартные операции CRUD для управления пользователями.
+    Доступ к созданию пользователей открыт для всех, в то время как другие действия
+    доступны только администраторам.
+
+    Атрибуты:
+    - serializer_class: Сериализатор, используемый для преобразования данных пользователя.
+    - queryset: Набор данных пользователей, доступных для операций.
+    - permission_classes: Классы разрешений, определяющие доступ к действиям.
     """
 
     serializer_class = UserSerializer
@@ -52,15 +62,28 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminUser]
 
     def get_permissions(self):
+        """
+        Определяет права доступа для действий в представлении.
+
+        Если действие - создание пользователя, разрешения устанавливаются на AllowAny,
+        что позволяет любому пользователю создавать новых пользователей.
+
+        Возвращает:
+        list: Список классов прав доступа для текущего действия.
+        """
         if self.action == "create":
             self.permission_classes = (AllowAny,)
         return super().get_permissions()
 
     def perform_create(self, serializer):
+        """
+        Выполняет логику создания нового пользователя.
+
+        Устанавливает пользователя как активного и хэширует пароль перед сохранением.
+
+        Параметры:
+        serializer (UserSerializer): Сериализатор для создания пользователя.
+        """
         user = serializer.save(is_active=True)
-        user.set_password(user.password)
-        user.save(
-            update_fields=[
-                "password",
-            ]
-        )
+        user.set_password(user.password)  # Хэширует пароль
+        user.save(update_fields=["password"])  # Сохраняет только поле пароля

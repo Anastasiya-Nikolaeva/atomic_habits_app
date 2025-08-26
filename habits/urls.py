@@ -1,10 +1,12 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
+
 from habits.apps import HabitsConfig
-from habits.views import HabitsViewSet, UserHabitViewSet, PublishedHabitListAPIView
+from habits.views import HabitsViewSet, PublishedHabitListAPIView, UserHabitViewSet
 
 app_name = HabitsConfig.name
 
+# Создание маршрутизатора для управления URL-адресами
 router = DefaultRouter()
 router.register(r"habits", HabitsViewSet, basename="habits")
 
